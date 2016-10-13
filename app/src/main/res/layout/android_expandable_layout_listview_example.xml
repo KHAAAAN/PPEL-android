@@ -27,13 +27,8 @@
         app:ael_interpolator="bounce"
         app:ael_orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Question 1 can really be expanded. See look. Bow chika wow wow wow wow wow wow wow wow wow wow
-            wow" />
-
         <VideoView
+            android:id="@+id/video1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"/>

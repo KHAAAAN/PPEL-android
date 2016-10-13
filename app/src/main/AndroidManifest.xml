@@ -26,7 +26,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".HelpActivity"/>
-
     </application>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

@@ -4,10 +4,13 @@ package com.ppel;
  * Created by root on 10/2/16.
  */
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.VideoView;
+import android.widget.MediaController;
 
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 
@@ -35,7 +38,23 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
 
     public void expandableButton1(View view) {
         expandableLayout1 = (ExpandableRelativeLayout) findViewById(R.id.expandableLayout1);
+
         expandableLayout1.toggle(); // toggle expand and collapse
+
+        VideoView video1 = (VideoView) findViewById(R.id.video1);
+        MediaController mediaController = new MediaController(this);
+        if(expandableLayout1.isExpanded()) {
+            video1.stopPlayback();
+            mediaController.clearAnimation();
+        } else {
+            //video1.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.big_buck_bunny));
+            Uri uri = Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4");
+            //Uri uri = Uri.parse("https://debianvm.eecs.wsu.edu/uploads/questions/8d2uqq19aittoh557.mp4");
+            video1.setVideoURI(uri);
+            video1.setMediaController(mediaController);
+            video1.requestFocus();
+            video1.start();
+        }
     }
 
     public void expandableButton2(View view) {
