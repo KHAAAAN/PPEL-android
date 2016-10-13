@@ -33,14 +33,14 @@ public class MainActivity extends AppCompatActivity
 
         relativeLayout = (RelativeLayout) findViewById(R.id.content_main);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //startActivity(new Intent(getApplicationContext(), InfoActivity.class));
     }
 
     @Override
@@ -96,8 +98,9 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(getApplicationContext(), ExpandableLayoutMaterialDesign.class));
         } else if (id == R.id.nav_gallery) {
             // this is PPEL's "Info" page or home page
-            Intent intent = new Intent(this, InfoActivity.class);
-            startActivity(intent);
+            /*Intent intent = new Intent(this, InfoActivity.class);
+            startActivity(intent);*/
+            startActivity(new Intent(getApplicationContext(), InfoActivity.class));
 
         } else if (id == R.id.nav_slideshow) {
 
