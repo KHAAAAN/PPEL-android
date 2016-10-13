@@ -95,6 +95,9 @@ public class MainActivity extends AppCompatActivity
             //startActivity(intent);
             startActivity(new Intent(getApplicationContext(), ExpandableLayoutMaterialDesign.class));
         } else if (id == R.id.nav_gallery) {
+            // this is PPEL's "Info" page or home page
+            Intent intent = new Intent(this, InfoActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_slideshow) {
 

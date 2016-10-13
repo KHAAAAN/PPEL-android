@@ -19,9 +19,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ExpandableLayoutMaterialDesign">
+        <activity android:name=".ExpandableLayoutMaterialDesign"/>
+        <activity android:name=".InfoActivity"/>
 
-        </activity>
     </application>
 
 </manifest>
