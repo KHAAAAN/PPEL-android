@@ -7,10 +7,11 @@ package com.ppel;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 
-public class ExpandableLayoutMaterialDesign extends AppCompatActivity {
+public class ExpandableLayoutMaterialDesign extends MainActivity {
 
     ExpandableRelativeLayout expandableLayout1, expandableLayout2, expandableLayout3, expandableLayout4, expandableLayout5;
 
@@ -20,8 +21,16 @@ public class ExpandableLayoutMaterialDesign extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //TODO: replace with actual questions we get from API.
+        getLayoutInflater().inflate(R.layout.android_expandable_layout_listview_example, relativeLayout);
+        //setContentView(R.layout.android_expandable_layout_listview_example);
+        setTitle("Questions");
+    }
 
-        setContentView(R.layout.android_expandable_layout_listview_example);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // to check current activity in the navigation drawer
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     public void expandableButton1(View view) {
