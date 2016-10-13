@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(getApplicationContext(), InfoActivity.class));
 
         } else if (id == R.id.nav_slideshow) {
-
+            startActivity(new Intent(getApplicationContext(), HelpActivity.class));
         }
 
         /*else if (id == R.id.nav_manage) {
