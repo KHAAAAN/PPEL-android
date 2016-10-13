@@ -30,7 +30,7 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
     protected void onResume() {
         super.onResume();
         // to check current activity in the navigation drawer
-        navigationView.getMenu().getItem(0).setChecked(true);
+        navigationView.getMenu().getItem(1).setChecked(true);
     }
 
     public void expandableButton1(View view) {
