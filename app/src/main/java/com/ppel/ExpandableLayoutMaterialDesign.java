@@ -6,6 +6,7 @@ package com.ppel;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -18,7 +19,6 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
 
     ExpandableRelativeLayout expandableLayout1, expandableLayout2, expandableLayout3, expandableLayout4, expandableLayout5;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +26,7 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
         //TODO: replace with actual questions we get from API.
         getLayoutInflater().inflate(R.layout.android_expandable_layout_listview_example, relativeLayout);
         //setContentView(R.layout.android_expandable_layout_listview_example);
+
         setTitle("Questions");
     }
 
@@ -48,8 +49,8 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
             mediaController.clearAnimation();
         } else {
             //video1.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.big_buck_bunny));
-            Uri uri = Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4");
-            //Uri uri = Uri.parse("https://debianvm.eecs.wsu.edu/uploads/questions/8d2uqq19aittoh557.mp4");
+           // Uri uri = Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4");
+            Uri uri = Uri.parse("https://debianvm.eecs.wsu.edu/uploads/questions/8d2uqq1bfiu8wqb8r.mp4");
             video1.setVideoURI(uri);
             video1.setMediaController(mediaController);
             video1.requestFocus();
