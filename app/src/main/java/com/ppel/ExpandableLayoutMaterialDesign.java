@@ -42,8 +42,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.net.ssl.HttpsURLConnection;
-
 public class ExpandableLayoutMaterialDesign extends MainActivity {
 
     //ExpandableRelativeLayout expandableLayout1, expandableLayout2, expandableLayout3, expandableLayout4, expandableLayout5;
@@ -157,9 +155,12 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
 
                 if(expLayout.isExpanded()) {
                     video.stopPlayback();
-                    video.destroyDrawingCache();
-                    mediaController.clearAnimation();
+                    video.setVisibility(VideoView.GONE);
+
+                    //mediaController.clearAnimation();
+
                 } else {
+                    video.setVisibility(VideoView.VISIBLE);
                     video.requestFocus();
                     video.start();
                 }
