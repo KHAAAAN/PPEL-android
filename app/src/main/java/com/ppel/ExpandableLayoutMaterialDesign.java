@@ -29,38 +29,34 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.Time;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 public class ExpandableLayoutMaterialDesign extends MainActivity {
 
     //ExpandableRelativeLayout expandableLayout1, expandableLayout2, expandableLayout3, expandableLayout4, expandableLayout5;
 
     private String ppelServerString;
+    private RelativeLayout questionsRelativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ppelServerString = getString(R.string.PPEL_server);
 
         //setContentView(R.layout.android_expandable_layout_listview_example);
         //TODO: replace with actual questions we get from API.
         getLayoutInflater().inflate(R.layout.android_expandable_layout_listview_example, relativeLayout);
         setTitle("Questions");
 
+        ppelServerString = getString(R.string.PPEL_server);
+        questionsRelativeLayout = (RelativeLayout) findViewById(R.id.questionsRelativeLayout);
+
         try {
             String jsonString = new RetrieveQuestionsTask()
                     .execute(ppelServerString + getString(R.string.Questions_API)).get(20000, TimeUnit.MILLISECONDS);
+
             initTabs(jsonString);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -125,6 +121,7 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                 Uri uri = Uri.parse(ppelServerString + jsonObject.get("path").toString());
                 video.setVideoURI(uri);
                 video.setMediaController(mediaController);
+                mediaController.setAnchorView(video);
 
                 RelativeLayout.LayoutParams expLayoutParams = new RelativeLayout
                         .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -135,10 +132,11 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                         video,
                         mediaController));
 
-                expLayout.addView(video);
+                expLayout.addView(video, 0);
 
-                relativeLayout.addView(button, i + i, buttonLayoutParams);
-                relativeLayout.addView(expLayout, i + i + 1, expLayoutParams);
+
+                questionsRelativeLayout.addView(button, i + i, buttonLayoutParams);
+                questionsRelativeLayout.addView(expLayout, i + i + 1, expLayoutParams);
 
             }
         } catch (JSONException e) {
@@ -154,15 +152,15 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                 expLayout.toggle();
 
                 if(expLayout.isExpanded()) {
-                    video.stopPlayback();
+                    mediaController.hide();
                     video.setVisibility(VideoView.GONE);
-
+                    video.stopPlayback();
                     //mediaController.clearAnimation();
 
                 } else {
+                    video.start();
                     video.setVisibility(VideoView.VISIBLE);
                     video.requestFocus();
-                    video.start();
                 }
             }
         };
