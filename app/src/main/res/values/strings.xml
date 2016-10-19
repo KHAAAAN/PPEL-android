@@ -1,4 +1,8 @@
 <resources>
+    <string name="PPEL_server">https://debianvm.eecs.wsu.edu</string>
+    <string name="Questions_API">/api/questions</string>
+    <string name="Responses_API">/api/responses</string>
+
     <string name="app_name">PPEL</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -7,5 +11,4 @@
     <string name="action_settings">Settings</string>
     <string name="menu">this is a menu string</string>
     <string name="info">this is info blah blah.......................Heres what it looks like when it hits the end and wraps</string>
-
 </resources>

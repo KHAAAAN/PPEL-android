@@ -16,9 +16,6 @@ import android.widget.RelativeLayout;
 
 
 public class InfoActivity extends MainActivity{
-
-    LinearLayout infoLayout;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
