@@ -4,23 +4,18 @@ package com.ppel;
  * Created by root on 10/2/16.
  */
 
-import android.animation.TimeInterpolator;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
-import android.view.animation.Interpolator;
 import android.widget.Button;
+import android.widget.MediaController;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
-import android.widget.MediaController;
 
 import com.github.aakira.expandablelayout.ExpandableLayout;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
@@ -28,11 +23,11 @@ import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
 
 public class ExpandableLayoutMaterialDesign extends MainActivity {
 
@@ -55,7 +50,7 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
 
         try {
             String jsonString = new RetrieveQuestionsTask()
-                    .execute(ppelServerString + getString(R.string.Questions_API)).get(20000, TimeUnit.MILLISECONDS);
+                    .execute(ppelServerString + getString(R.string.Questions_API)).get(10000, TimeUnit.MILLISECONDS);
 
             initTabs(jsonString);
         } catch (InterruptedException e) {
@@ -108,11 +103,6 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                 expLayout.setExpanded(false);
                 expLayout.setInterpolator(new BounceInterpolator());
                 expLayout.setOrientation(ExpandableLayout.VERTICAL);
-
-                /*TextView text = new TextView(ExpandableLayoutMaterialDesign.this);
-                text.setText("TESTING");
-                expLayout.addView(text);*/
-
                 VideoView video = new VideoView(ExpandableLayoutMaterialDesign.this);
 
                 MediaController mediaController = new MediaController(ExpandableLayoutMaterialDesign.this);
@@ -123,6 +113,12 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                 video.setMediaController(mediaController);
                 mediaController.setAnchorView(video);
 
+                TextView text = null;
+                if(jsonObject.has("text")) {
+                    text = new TextView(ExpandableLayoutMaterialDesign.this);
+                    text.setText(jsonObject.get("text").toString());
+                }
+
                 RelativeLayout.LayoutParams expLayoutParams = new RelativeLayout
                         .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
@@ -132,8 +128,15 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                         video,
                         mediaController));
 
-                expLayout.addView(video, 0);
+                RelativeLayout.LayoutParams videoLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
 
+                expLayout.addView(video, videoLayoutParams);
+                /*if(jsonObject.has("text")) {
+                    RelativeLayout.LayoutParams textLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+                    expLayout.addView(text, textLayoutParams);
+                }*/
 
                 questionsRelativeLayout.addView(button, i + i, buttonLayoutParams);
                 questionsRelativeLayout.addView(expLayout, i + i + 1, expLayoutParams);
@@ -173,7 +176,6 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
         // to check current activity in the navigation drawer
         navigationView.getMenu().getItem(1).setChecked(true);
     }
-
 
     /*public void expandableButton1(View view) {
         expandableLayout1 = (ExpandableRelativeLayout) findViewById(R.id.expandableLayout1);
