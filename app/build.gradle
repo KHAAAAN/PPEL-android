@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.3"
     defaultConfig {
         applicationId "com.ppel"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -28,5 +28,7 @@ dependencies {
     compile 'com.android.support:design:24.2.1'
     testCompile 'junit:junit:4.12'
 
-    compile 'com.github.aakira:expandable-layout:1.4.2@aar'
+    compile 'com.github.aakira:expandable-layout:1.4.1@aar'
+    //compile 'com.github.rtoshiro.fullscreenvideoview:fullscreenvideoview:1.1.2'
+    compile "com.android.support:support-v13:24.0.+"
 }

@@ -11,4 +11,9 @@
     <string name="action_settings">Settings</string>
     <string name="menu">this is a menu string</string>
     <string name="info">this is info blah blah.......................Heres what it looks like when it hits the end and wraps</string>
+
+    <!-- camera stuff -->
+    <string name="permission_request">This sample needs permission for camera and audio recording.</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+
 </resources>
