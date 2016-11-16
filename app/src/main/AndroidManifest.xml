@@ -19,18 +19,16 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <!--intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter-->
         </activity>
 
         <activity android:name=".ExpandableLayoutMaterialDesign"/>
-        <activity android:name=".InfoActivity">
+        <activity android:name=".login.LoginWebActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".InfoActivity">
         </activity>
         <activity android:name=".HelpActivity"/>
         <activity android:name=".CameraActivity"/>

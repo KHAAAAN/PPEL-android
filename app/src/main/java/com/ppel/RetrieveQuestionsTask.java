@@ -2,6 +2,7 @@ package com.ppel;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.webkit.CookieManager;
 import android.widget.Button;
 
 import org.json.JSONArray;
@@ -34,6 +35,9 @@ public class RetrieveQuestionsTask extends AsyncTask<String, Void, String> {
             try {
                 HttpURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
+                CookieManager cookieManager = CookieManager.getInstance();
+                String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api");
+                urlConnection.setRequestProperty("Cookie", cookie);
                 try {
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                     jsonString = convertStreamToString(in);

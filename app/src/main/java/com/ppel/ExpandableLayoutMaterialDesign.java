@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
+import android.webkit.CookieManager;
 import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.RelativeLayout;
@@ -28,7 +29,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -118,7 +121,11 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
 
                 //example https://debianvm.eecs.wsu.edu/uploads/somethingblahblah.mp4
                 Uri uri = Uri.parse(ppelServerString + jsonObject.get("path").toString());
-                video.setVideoURI(uri);
+                Map<String, String> headers = new HashMap<>(1) ;
+                CookieManager cookieManager = CookieManager.getInstance();
+                String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api");
+                headers.put("Cookie", cookie);
+                video.setVideoURI(uri, headers);
                 video.setMediaController(mediaController);
                 mediaController.setAnchorView(video);
 
