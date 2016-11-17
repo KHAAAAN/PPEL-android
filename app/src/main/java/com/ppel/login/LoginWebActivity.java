@@ -23,6 +23,7 @@ public class LoginWebActivity extends Activity{
 
         @Override
         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+
             handler.proceed();
             // Ignore SSL certificate errors
         }
@@ -30,13 +31,30 @@ public class LoginWebActivity extends Activity{
     }
 
     @Override
-    protected  void onCreate(Bundle savedInstance){
+    protected  void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_login);
         WebView webView = (WebView) findViewById(R.id.webview);
         webView.setWebViewClient(new WvClient());
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("https://debianvm.eecs.wsu.edu/api");
-        //startActivity(new Intent(getApplicationContext(), InfoActivity.class));
+
+        CookieManager cookieManager = CookieManager.getInstance();
+        String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api");
+        Log.d("cookie", "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+
+        if (cookie != null)
+        {
+            Log.i("cookie", cookie);
+        }
+        else
+        {
+            Log.d("cookie", "cookie was null");
+        }
+
+
+        //just out of curiosity how does our app store the cookies
+
+        startActivity(new Intent(getApplicationContext(), InfoActivity.class));
     }
 }

@@ -39,6 +39,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -610,7 +611,8 @@ public class Camera2VideoFragment extends Fragment
 
     private String getVideoFilePath(Context context) {
         return context.getExternalFilesDir(null).getAbsolutePath() + "/"
-                + System.currentTimeMillis() + ".mp4";
+                + "new.mp4";
+                //+ System.currentTimeMillis() + ".mp4";
     }
 
     private void startRecordingVideo() {
@@ -683,7 +685,14 @@ public class Camera2VideoFragment extends Fragment
     private void stopRecordingVideo() {
         // UI
         mIsRecordingVideo = false;
+
+        // At this point they can either save the video or delete, so display those options
+
+        // mButtonSave.
+        // mButtonDelete.setText
+
         mButtonVideo.setText("record");
+
         // Stop recording
         //mMediaRecorder.stop();
         //mMediaRecorder.reset();
@@ -695,10 +704,19 @@ public class Camera2VideoFragment extends Fragment
             Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
 
         }
+
         mNextVideoAbsolutePath = null;
         //startPreview();
 
         closeCamera();
+
+        // Should we playback the video that was just recorded here?
+        // initial idea
+        // start with onActivityResult (int requestCode, int resultCode, Intent data)
+        // use result code to see if they did one of the following
+        // Deleted the video, saved the video, or did not take a video.
+        // if they delete the video then
+
         openCamera (mTextureView.getWidth() , mTextureView.getHeight());
     }
 

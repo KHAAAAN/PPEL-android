@@ -37,6 +37,9 @@ public class RetrieveQuestionsTask extends AsyncTask<String, Void, String> {
                 urlConnection.setRequestMethod("GET");
                 CookieManager cookieManager = CookieManager.getInstance();
                 String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api");
+
+                //Log.i("cookie", cookie);
+
                 urlConnection.setRequestProperty("Cookie", cookie);
                 try {
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
