@@ -50,10 +50,9 @@ public class LoginWebActivity extends Activity{
         webView.setWebViewClient(new WvClient());
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("https://debianvm.eecs.wsu.edu/api");
-
         CookieManager cookieManager = CookieManager.getInstance();
         String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api");
-        Log.d("cookie", "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+        Log.d("cookie", cookie);
 
         if (cookie != null)
         {
@@ -67,6 +66,6 @@ public class LoginWebActivity extends Activity{
 
         //just out of curiosity how does our app store the cookies
 
-        startActivity(new Intent(getApplicationContext(), InfoActivity.class));
+        //startActivity(new Intent(getApplicationContext(), InfoActivity.class));
     }
 }
