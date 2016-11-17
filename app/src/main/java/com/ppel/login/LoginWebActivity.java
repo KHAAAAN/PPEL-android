@@ -2,18 +2,21 @@ package com.ppel.login;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Bundle;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 
 import com.ppel.InfoActivity;
 import com.ppel.R;
+import com.ppel.RetrieveEmailTask;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by jay on 11/15/16.
@@ -30,10 +33,26 @@ public class LoginWebActivity extends Activity{
 
         @Override
         public void onPageFinished(WebView view, String url){
-            CookieManager cookieManager = CookieManager.getInstance();
-            String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api");
-            if(cookie != null) {
-                startActivity(new Intent(getApplicationContext(), InfoActivity.class));
+
+            String email;
+            try {
+                email = new RetrieveEmailTask().execute("https://debianvm.eecs.wsu.edu/api/users/email").get(10000, TimeUnit.MILLISECONDS);
+
+            } catch (InterruptedException e) {
+                email = null;
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                email = null;
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                email = null;
+                e.printStackTrace();
+            }
+
+            if(email != null) {
+                Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
             }
         }
     }
@@ -42,7 +61,7 @@ public class LoginWebActivity extends Activity{
     protected  void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
 
-        CookieManager.getInstance().removeAllCookies(null);
+        //CookieManager.getInstance().removeAllCookies(null); //temporary.
 
         setContentView(R.layout.activity_login);
         WebView webView = (WebView) findViewById(R.id.webview);

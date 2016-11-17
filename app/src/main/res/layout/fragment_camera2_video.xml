@@ -18,12 +18,12 @@
         android:layout_below="@id/texture"
         android:background="#4285f4">
 
-        <Button
+        <!--Button
             android:id="@+id/facing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:text="flip"/>
+            android:text="flip"/-->
 
         <Button
             android:id="@+id/video"
