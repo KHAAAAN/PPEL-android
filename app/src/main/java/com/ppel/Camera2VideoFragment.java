@@ -693,7 +693,6 @@ public class Camera2VideoFragment extends Fragment
             Toast.makeText(activity, "Video saved: " + mNextVideoAbsolutePath,
                     Toast.LENGTH_SHORT).show();
             Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
-
         }
         mNextVideoAbsolutePath = null;
         //startPreview();

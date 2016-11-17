@@ -1,12 +1,7 @@
 package com.ppel;
 
 import android.os.AsyncTask;
-import android.util.Log;
 import android.webkit.CookieManager;
-import android.widget.Button;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
