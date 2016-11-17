@@ -21,6 +21,7 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -692,11 +693,11 @@ public class Camera2VideoFragment extends Fragment
                     Toast.LENGTH_SHORT).show();
             Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
         }
-        closeCamera();
+
         mNextVideoAbsolutePath = null;
         //startPreview();
 
-        //closeCamera();
+        closeCamera();
         openCamera (mTextureView.getWidth() , mTextureView.getHeight());
 
     }

@@ -61,13 +61,10 @@ public class LoginWebActivity extends Activity{
     protected  void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
 
-        //CookieManager.getInstance().removeAllCookies(null); //temporary.
-
         setContentView(R.layout.activity_login);
         WebView webView = (WebView) findViewById(R.id.webview);
         webView.setWebViewClient(new WvClient());
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("https://debianvm.eecs.wsu.edu/api");
-        //startActivity(new Intent(getApplicationContext(), InfoActivity.class));
     }
 }

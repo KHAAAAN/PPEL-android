@@ -16,6 +16,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ppel.login.LoginWebActivity;
+import com.ppel.login.LogoutTask;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -118,8 +123,21 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("email", email);
             startActivity(intent);
         } else if (id == R.id.nav_manage){
-            CookieManager cookieManager = CookieManager.getInstance();
-            cookieManager.removeAllCookies(null);
+            /*CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.removeAllCookies(null);*/
+            LogoutTask logoutTask = new LogoutTask();
+            try {
+                logoutTask.execute(" https://debianvm.eecs.wsu.edu/Shibboleth.sso/Logout").get(10000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            } finally{
+                CookieManager cookieManager = CookieManager.getInstance();
+                cookieManager.removeAllCookies(null);
+            }
             startActivity(new Intent(this, LoginWebActivity.class));
         }
 
