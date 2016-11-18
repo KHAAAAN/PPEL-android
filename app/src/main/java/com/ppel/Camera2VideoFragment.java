@@ -37,6 +37,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -589,11 +590,12 @@ public class Camera2VideoFragment extends Fragment
             mNextVideoAbsolutePath = getVideoFilePath(getActivity());
         }
         mMediaRecorder.setOutputFile(mNextVideoAbsolutePath);
-        mMediaRecorder.setVideoEncodingBitRate(10000000);
+        mMediaRecorder.setVideoEncodingBitRate(500000);
         mMediaRecorder.setVideoFrameRate(30);
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         switch (mSensorOrientation) {
             case SENSOR_ORIENTATION_DEFAULT_DEGREES:
@@ -608,7 +610,8 @@ public class Camera2VideoFragment extends Fragment
 
     private String getVideoFilePath(Context context) {
         return context.getExternalFilesDir(null).getAbsolutePath() + "/"
-                + System.currentTimeMillis() + ".mp4";
+                + "new.mp4";
+                //+ System.currentTimeMillis() + ".mp4";
     }
 
     private void startRecordingVideo() {
@@ -681,7 +684,10 @@ public class Camera2VideoFragment extends Fragment
     private void stopRecordingVideo() {
         // UI
         mIsRecordingVideo = false;
+
+
         mButtonVideo.setText("record");
+
         // Stop recording
         //mMediaRecorder.stop();
         //mMediaRecorder.reset();
@@ -693,13 +699,18 @@ public class Camera2VideoFragment extends Fragment
             Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
         }
 
-        mNextVideoAbsolutePath = null;
         //startPreview();
-
         closeCamera();
-        openCamera (mTextureView.getWidth() , mTextureView.getHeight());
 
+        // Playback the video that was just recorded here.
+        // At this point they can either save the video or delete it, so display those options
+        // If they save the video, perform compression and Post to the server
+        // If they delete the video, remove it from the file system and allow them to record again
+
+        mNextVideoAbsolutePath = null;
+        openCamera (mTextureView.getWidth() , mTextureView.getHeight());
     }
+
 
     /**
      * Compares two {@code Size}s based on their areas.

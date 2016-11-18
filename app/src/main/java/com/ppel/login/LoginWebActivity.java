@@ -25,6 +25,7 @@ public class LoginWebActivity extends Activity{
     private class WvClient extends WebViewClient {
         @Override
         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+
             handler.proceed();
             // Ignore SSL certificate errors
         }
@@ -56,7 +57,7 @@ public class LoginWebActivity extends Activity{
     }
 
     @Override
-    protected  void onCreate(Bundle savedInstance){
+    protected  void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
         setContentView(R.layout.activity_login);
