@@ -706,23 +706,12 @@ public class Camera2VideoFragment extends Fragment
         // Playback the video that was just recorded here.
         // At this point they can either save the video or delete it, so display those options
         // If they save the video, perform compression and Post to the server
-        SaveVideo();
         // If they delete the video, remove it from the file system and allow them to record again
 
         mNextVideoAbsolutePath = null;
         openCamera (mTextureView.getWidth() , mTextureView.getHeight());
     }
 
-    private void SaveVideo()
-    {
-        // compress the video that was recorded
-        Log.i("SAVE", "Saving: " + mNextVideoAbsolutePath);
-        
-        String[] files = {mNextVideoAbsolutePath};
-        String destinationZipFile = mNextVideoAbsolutePath + ".zip";
-        Compressor compressor = new Compressor(files, destinationZipFile);
-        compressor.zip();
-    }
 
     /**
      * Compares two {@code Size}s based on their areas.
