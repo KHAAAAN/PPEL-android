@@ -8,6 +8,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
@@ -701,12 +702,9 @@ public class Camera2VideoFragment extends Fragment
 
         //startPreview();
         closeCamera();
-
-        // Playback the video that was just recorded here.
-        // At this point they can either save the video or delete it, so display those options
-        // If they save the video, perform compression and Post to the server
-        // If they delete the video, remove it from the file system and allow them to record again
-
+        /*Intent intent = new Intent(getActivity().getBaseContext(), PlayRecordingActivity.class);
+        intent.putExtra("videopath", mNextVideoAbsolutePath);
+        startActivity(intent);*/
         mNextVideoAbsolutePath = null;
         openCamera (mTextureView.getWidth() , mTextureView.getHeight());
     }
