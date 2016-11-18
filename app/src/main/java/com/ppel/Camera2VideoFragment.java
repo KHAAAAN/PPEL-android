@@ -591,11 +591,12 @@ public class Camera2VideoFragment extends Fragment
             mNextVideoAbsolutePath = getVideoFilePath(getActivity());
         }
         mMediaRecorder.setOutputFile(mNextVideoAbsolutePath);
-        mMediaRecorder.setVideoEncodingBitRate(10000000);
+        mMediaRecorder.setVideoEncodingBitRate(500000);
         mMediaRecorder.setVideoFrameRate(30);
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         switch (mSensorOrientation) {
             case SENSOR_ORIENTATION_DEFAULT_DEGREES:
@@ -685,10 +686,6 @@ public class Camera2VideoFragment extends Fragment
         // UI
         mIsRecordingVideo = false;
 
-        // At this point they can either save the video or delete, so display those options
-
-        // mButtonSave.
-        // mButtonDelete.setText
 
         mButtonVideo.setText("record");
 
@@ -703,20 +700,28 @@ public class Camera2VideoFragment extends Fragment
             Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
         }
 
-        mNextVideoAbsolutePath = null;
         //startPreview();
-
         closeCamera();
 
-        // Should we playback the video that was just recorded here?
-        // initial idea
-        // start with onActivityResult (int requestCode, int resultCode, Intent data)
-        // use result code to see if they did one of the following
-        // Deleted the video, saved the video, or did not take a video.
-        // if they delete the video then
+        // Playback the video that was just recorded here.
+        // At this point they can either save the video or delete it, so display those options
+        // If they save the video, perform compression and Post to the server
+        SaveVideo();
+        // If they delete the video, remove it from the file system and allow them to record again
 
+        mNextVideoAbsolutePath = null;
         openCamera (mTextureView.getWidth() , mTextureView.getHeight());
+    }
 
+    private void SaveVideo()
+    {
+        // compress the video that was recorded
+        Log.i("SAVE", "Saving: " + mNextVideoAbsolutePath);
+        
+        String[] files = {mNextVideoAbsolutePath};
+        String destinationZipFile = mNextVideoAbsolutePath + ".zip";
+        Compressor compressor = new Compressor(files, destinationZipFile);
+        compressor.zip();
     }
 
     /**
