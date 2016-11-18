@@ -45,7 +45,6 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
         super.onCreate(savedInstanceState);
 
         //setContentView(R.layout.android_expandable_layout_listview_example);
-        //TODO: replace with actual questions we get from API.
         getLayoutInflater().inflate(R.layout.android_expandable_layout_listview_example, relativeLayout);
         setTitle("Questions");
 
@@ -250,25 +249,4 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
         // to check current activity in the navigation drawer
         navigationView.getMenu().getItem(1).setChecked(true);
     }
-
-    /*public void expandableButton1(View view) {
-        ExpandableRelativeLayout expandableLayout1 = (ExpandableRelativeLayout) findViewById(R.id.expandableLayout1);
-        expandableLayout1.toggle(); // toggle expand and collapse
-
-        FullscreenVideoLayout videoLayout = (FullscreenVideoLayout) findViewById(R.id.videoview);
-        videoLayout.setActivity(this);
-        Uri videoUri = Uri.parse("http://www.quirksmode.org/html5/videos/big_buck_bunny.mp4");
-        try {
-            videoLayout.setVideoURI(videoUri);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        expandableLayout1.initLayout(true);
-    }
-
-    /*public void expandableButton1(View view) {
-        ExpandableLinearLayout expandableLayout1 = (ExpandableLinearLayout) findViewById(R.id.expandableLayout1);
-        expandableLayout1.toggle(); // toggle expand and collapse
-    }*/
 }
