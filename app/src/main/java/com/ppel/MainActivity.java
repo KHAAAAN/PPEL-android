@@ -1,6 +1,9 @@
 package com.ppel;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -63,9 +67,20 @@ public class MainActivity extends AppCompatActivity
         if (extras != null){
             email = extras.getString("email");
             View headerView = navigationView.getHeaderView(0);
+
+            Drawable drawableEmblem = getDrawable (R.drawable.wsu_emblem_drawable);
+            drawableEmblem = resize(drawableEmblem );
+            ((ImageView) headerView.findViewById(R.id.navigation_icon)).setImageDrawable(drawableEmblem );
+
             ((TextView) headerView.findViewById(R.id.email)).setText(email);
             ((TextView) headerView.findViewById(R.id.userName)).setText(email.split("@")[0].replace('.', ' '));
         }
+    }
+
+    private Drawable resize(Drawable image) {
+        Bitmap b = ((BitmapDrawable)image).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 200, 200, false);
+        return new BitmapDrawable(getResources(), bitmapResized);
     }
 
     @Override
