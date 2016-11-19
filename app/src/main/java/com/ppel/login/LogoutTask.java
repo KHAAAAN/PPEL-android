@@ -1,5 +1,8 @@
 package com.ppel.login;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.webkit.CookieManager;
 
@@ -22,9 +25,10 @@ import javax.net.ssl.HttpsURLConnection;
  */
 
 public class LogoutTask extends AsyncTask<String , Void, Void> {
-    @Override
-    protected Void doInBackground(String... params) {
 
+    @Override
+    protected Void doInBackground(String... params)
+    {
         CookieManager cookieManager = CookieManager.getInstance();
         try {
             URL url = new URL(params[0]);
@@ -55,4 +59,5 @@ public class LogoutTask extends AsyncTask<String , Void, Void> {
         }
         return null;
     }
+
 }

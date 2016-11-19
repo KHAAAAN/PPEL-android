@@ -228,10 +228,8 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                     mediaController.hide();
                     video.setVisibility(VideoView.GONE);
                     video.stopPlayback();
-                    //mediaController.clearAnimation();
-
                 } else {
-                    video.start();
+                    video.seekTo(1);
                     video.setVisibility(VideoView.VISIBLE);
                     video.requestFocus();
                     int id = ((ExpandableRelativeLayout)expLayout).getId();
@@ -239,8 +237,6 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                         triplet.hideIfNotThisId(id);
                     }
                 }
-
-                //expLayout.initLayout(true);
             }
         };
     }
