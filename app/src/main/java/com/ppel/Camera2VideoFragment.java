@@ -409,14 +409,14 @@ public class Camera2VideoFragment extends Fragment
                 PostResponseTask postResponseTask = new PostResponseTask();
                 try {
                     Bundle extras = getActivity().getIntent().getExtras();
-                    postResponseTask.execute(extras.getString("objectId"), mNextVideoAbsolutePath).get(10000, TimeUnit.MILLISECONDS);
+                    postResponseTask.execute(extras.getString("objectId"), mNextVideoAbsolutePath).get(/*10000, TimeUnit.MILLISECONDS*/);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
-                } catch (TimeoutException e) {
+                } /*catch (TimeoutException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
         };
     }

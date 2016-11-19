@@ -35,7 +35,7 @@ public class RetrieveEmailTask extends AsyncTask<String, Void, String> {
                 HttpURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 CookieManager cookieManager = CookieManager.getInstance();
-                String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api/users/email");
+                String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api/users/email"); //remove hardcode.
 
                 if(cookie == null){ //write better code than this when we have more time...
                     urlConnection.disconnect();

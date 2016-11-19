@@ -117,7 +117,7 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
 
                 //example https://debianvm.eecs.wsu.edu/uploads/somethingblahblah.mp4
                 Uri uri = Uri.parse(ppelServerString + jsonObject.get("path").toString());
-                Map<String, String> headers = new HashMap<>(1) ;
+                Map<String, String> headers = new HashMap<>(1);
                 CookieManager cookieManager = CookieManager.getInstance();
                 String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api");
                 headers.put("Cookie", cookie);
