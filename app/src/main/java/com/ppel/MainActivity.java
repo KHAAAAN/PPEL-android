@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
             View headerView = navigationView.getHeaderView(0);
 
             Drawable drawableEmblem = getDrawable (R.drawable.wsu_emblem_drawable);
-            drawableEmblem = resize(drawableEmblem );
+            drawableEmblem = resize(drawableEmblem);
             ((ImageView) headerView.findViewById(R.id.navigation_icon)).setImageDrawable(drawableEmblem );
 
             ((TextView) headerView.findViewById(R.id.email)).setText(email);

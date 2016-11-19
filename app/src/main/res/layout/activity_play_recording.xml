@@ -3,12 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.ppel.AutoFitTextureView
+    <!--com.ppel.AutoFitTextureView
         android:id="@+id/textureView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true" /-->
+
+    <TextureView
+        android:id="@+id/textureView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -17,15 +22,6 @@
         android:layout_alignParentStart="true"
         android:layout_below="@id/textureView"
         android:background="#4285f4">
-
-        <!--Button
-            android:id="@+id/facing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:text="flip"/-->
-
-
 
         <Button
             android:id="@+id/saveButton"

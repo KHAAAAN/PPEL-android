@@ -22,6 +22,7 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,8 +48,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class Camera2VideoFragment extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
@@ -112,7 +115,9 @@ public class Camera2VideoFragment extends Fragment
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture,
                                               int width, int height) {
+
             openCamera(width, height);
+
         }
 
         @Override
@@ -271,7 +276,6 @@ public class Camera2VideoFragment extends Fragment
         mButtonVideo = (Button) view.findViewById(R.id.video);
         mButtonVideo.setOnClickListener(this);
         view.findViewById(R.id.info).setOnClickListener(this);
-
     }
 
     @Override
@@ -395,6 +399,113 @@ public class Camera2VideoFragment extends Fragment
             }
         }
         return true;
+    }
+
+    private MediaPlayer mMediaPlayer;
+
+    private View.OnClickListener handleSaving(){
+        return new View.OnClickListener(){
+            public void onClick(View v){
+                PostResponseTask postResponseTask = new PostResponseTask();
+                try {
+                    Bundle extras = getActivity().getIntent().getExtras();
+                    postResponseTask.execute(extras.getString("objectId"), mNextVideoAbsolutePath).get(10000, TimeUnit.MILLISECONDS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
+    private void playRecording(int width, int height){
+        /*if (!hasPermissionsGranted(VIDEO_PERMISSIONS)) {
+            requestVideoPermissions();
+            return;
+        }*/
+        final Activity activity = getActivity();
+        if (null == activity || activity.isFinishing()) {
+            return;
+        }
+        //CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
+        try {
+           /* Log.d(TAG, "tryAcquire");
+            if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
+                throw new RuntimeException("Time out waiting to lock camera opening.");
+            }
+            String cameraId = manager.getCameraIdList()[0];
+
+            for (String id: manager.getCameraIdList()) {
+                CameraCharacteristics chars = manager.getCameraCharacteristics(id);
+                Integer facing = chars.get(CameraCharacteristics.LENS_FACING);
+                Log.i("facing", "" + facing);
+                if(facing == CameraCharacteristics.LENS_FACING_FRONT){
+
+                    cameraId = id;
+                    break;
+                }
+            }
+
+            // Choose the sizes for camera preview and video recording
+            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+            StreamConfigurationMap map = characteristics
+                    .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+            mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
+            mVideoSize = chooseVideoSize(map.getOutputSizes(MediaRecorder.class));
+            mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
+                    width, height, mVideoSize);
+
+            int orientation = getResources().getConfiguration().orientation;
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                mTextureView.setAspectRatio(mPreviewSize.getWidth(), mPreviewSize.getHeight());
+            } else {
+                mTextureView.setAspectRatio(mPreviewSize.getHeight(), mPreviewSize.getWidth());
+            }*/
+            configureTransform(width, height);
+            //mMediaRecorder = new MediaRecorder();
+            Surface surface = new Surface(mTextureView.getSurfaceTexture());
+            try {
+                mButtonVideo.setText("save");
+                mButtonVideo.setOnClickListener(handleSaving());
+
+                mMediaPlayer = new MediaPlayer();
+                mMediaPlayer.setDataSource(mNextVideoAbsolutePath);
+                mMediaPlayer.setSurface(surface);
+                mMediaPlayer.setLooping(true);
+                mMediaPlayer.prepareAsync();
+
+                // Play video when the media source is ready for playback.
+                mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mediaPlayer) {
+                        mediaPlayer.start();
+                    }
+                });
+
+            } catch (IllegalArgumentException e) {
+                Log.d(TAG, e.getMessage());
+            } catch (SecurityException e) {
+                Log.d(TAG, e.getMessage());
+            } catch (IllegalStateException e) {
+                Log.d(TAG, e.getMessage());
+            } catch (IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+            //manager.openCamera(cameraId, mStateCallback, null);
+        } /*catch (CameraAccessException e) {
+            Toast.makeText(activity, "Cannot access the camera.", Toast.LENGTH_SHORT).show();
+            activity.finish();
+        }*/ catch (NullPointerException e) {
+            // Currently an NPE is thrown when the Camera2API is used but not supported on the
+            // device this code runs.
+            ErrorDialog.newInstance(getString(R.string.camera_error))
+                    .show(getChildFragmentManager(), FRAGMENT_DIALOG);
+        }/* catch (InterruptedException e) {
+            throw new RuntimeException("Interrupted while trying to lock camera opening.");
+        }*/
     }
 
     /**
@@ -682,6 +793,21 @@ public class Camera2VideoFragment extends Fragment
         }
     }
 
+    public boolean isPlayingRecording = false;
+
+    /*@Override
+    public void onDetach(){
+
+        if(!isPlayingRecording){
+            super.onDetach();
+        } else{
+            isPlayingRecording = false;
+            mNextVideoAbsolutePath = null;
+            closeCamera();
+            openCamera (mTextureView.getWidth() , mTextureView.getHeight());
+        }
+    }*/
+
     private void stopRecordingVideo() {
         // UI
         mIsRecordingVideo = false;
@@ -701,12 +827,15 @@ public class Camera2VideoFragment extends Fragment
         }
 
         //startPreview();
-        closeCamera();
-        /*Intent intent = new Intent(getActivity().getBaseContext(), PlayRecordingActivity.class);
+
+        /*Intent intent = new Intent(getActivity(), PlayRecordingActivity.class);
         intent.putExtra("videopath", mNextVideoAbsolutePath);
         startActivity(intent);*/
-        mNextVideoAbsolutePath = null;
-        openCamera (mTextureView.getWidth() , mTextureView.getHeight());
+        //mNextVideoAbsolutePath = null;
+        closeCamera();
+        isPlayingRecording = true;
+        playRecording(mTextureView.getWidth(), mTextureView.getHeight());
+        //openCamera (mTextureView.getWidth() , mTextureView.getHeight());
     }
 
 

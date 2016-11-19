@@ -3,6 +3,7 @@ package com.ppel;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -18,14 +19,14 @@ import java.io.IOException;
 
 public class PlayRecordingActivity extends Activity implements TextureView.SurfaceTextureListener {
 
-    private AutoFitTextureView mTextureView;
-
     @Override
     protected  void onCreate(Bundle savedInstance){
-
         Bundle extras = getIntent().getExtras();
-
         FILE_NAME = extras.getString("videopath");
+
+        super.onCreate(savedInstance);
+        setContentView(R.layout.activity_play_recording);
+
 
         initView();
     }
@@ -59,9 +60,9 @@ public class PlayRecordingActivity extends Activity implements TextureView.Surfa
         Surface surface = new Surface(surfaceTexture);
 
         try {
-            AssetFileDescriptor afd = getAssets().openFd(FILE_NAME);
+
             mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            mMediaPlayer.setDataSource(FILE_NAME);
             mMediaPlayer.setSurface(surface);
             mMediaPlayer.setLooping(true);
             mMediaPlayer.prepareAsync();

@@ -168,7 +168,7 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                     recordButtonLayout.addRule(RelativeLayout.BELOW, video.getId());
                 }
 
-                recordButton.setOnClickListener(handleRecording());
+                recordButton.setOnClickListener(handleRecording(jsonObject.getString("_id")));
                 expLayout.addView(recordButton, recordButtonLayout);
 
                 questionsRelativeLayout.addView(button, buttonLayoutParams);
@@ -207,10 +207,12 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
     }
     private List<Triplet> toHide;
 
-    private View.OnClickListener handleRecording(){
+    private View.OnClickListener handleRecording(final String objectId){
         return new View.OnClickListener(){
             public void onClick(View v){
-                startActivity(new Intent(getApplicationContext(), CameraActivity.class));
+                Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+                intent.putExtra("objectId", objectId);
+                startActivity(intent);
             }
         };
     }
