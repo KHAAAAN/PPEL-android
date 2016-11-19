@@ -1,5 +1,6 @@
 package com.ppel;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -14,7 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.webkit.CookieManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -121,8 +124,6 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-
-
         if (id == R.id.nav_camera) {
             Intent intent = new Intent(this, ExpandableLayoutMaterialDesign.class);
             intent.putExtra("email", email);
@@ -140,20 +141,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage){
             /*CookieManager cookieManager = CookieManager.getInstance();
             cookieManager.removeAllCookies(null);*/
-            LogoutTask logoutTask = new LogoutTask();
-            try {
-                logoutTask.execute(" https://debianvm.eecs.wsu.edu/Shibboleth.sso/Logout").get(10000, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                e.printStackTrace();
-            } finally{
-                CookieManager cookieManager = CookieManager.getInstance();
-                cookieManager.removeAllCookies(null);
-            }
-            startActivity(new Intent(this, LoginWebActivity.class));
+            ShowLogoutDialog();
         }
 
         /*else if (id == R.id.nav_manage) {
@@ -166,6 +154,60 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void PerformLogout()
+    {
+        LogoutTask logoutTask = new LogoutTask();
+
+        try {
+            logoutTask.execute(" https://debianvm.eecs.wsu.edu/Shibboleth.sso/Logout").get(10000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        } finally{
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.removeAllCookies(null);
+        }
+        startActivity(new Intent(this, LoginWebActivity.class));
+    }
+
+    private boolean ShowLogoutDialog()
+    {
+        final Dialog logoutDialog = new Dialog(this);
+
+        logoutDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        logoutDialog.setContentView(R.layout.logout_dialog);
+
+        TextView logoutTitleView= (TextView )logoutDialog.findViewById(R.id.logout_title);
+        logoutTitleView.setText("Do you really want to logout?");
+
+        // Inflate Yes button Layout
+        Button yesButton = (Button)logoutDialog.findViewById(R.id.buttonYes);
+        yesButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                PerformLogout();
+                logoutDialog.dismiss();
+            }
+        });
+
+        // Inflate No button Layout
+        Button noButton= (Button)logoutDialog.findViewById(R.id.buttonNo);
+        noButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v)
+            {
+                logoutDialog.dismiss();
+            }
+        });
+
+        logoutDialog.show();
+
         return true;
     }
 }
