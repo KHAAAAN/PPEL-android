@@ -116,11 +116,13 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                 MediaController mediaController = new MediaController(ExpandableLayoutMaterialDesign.this);
 
                 //example https://debianvm.eecs.wsu.edu/uploads/somethingblahblah.mp4
+                //this lets the video stream
                 Uri uri = Uri.parse(ppelServerString + jsonObject.get("path").toString());
                 Map<String, String> headers = new HashMap<>(1);
                 CookieManager cookieManager = CookieManager.getInstance();
                 String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api");
                 headers.put("Cookie", cookie);
+
                 video.setVideoURI(uri, headers);
                 video.setMediaController(mediaController);
                 mediaController.setAnchorView(video);
@@ -131,9 +133,19 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
 
                 expLayoutParams.addRule(RelativeLayout.BELOW, currButtonId);
 
+                //now take care of response video if it exists
+                VideoView responseVideo = new VideoView(ExpandableLayoutMaterialDesign.this);
+                responseVideo.setId(View.generateViewId());
+
+                MediaController mediaController2 = new MediaController(ExpandableLayoutMaterialDesign.this);
+                String responsePath = "android.resource://" + getPackageName() + "/" + R.raw.sample;
+                responseVideo.setVideoURI(Uri.parse(responsePath));
+                responseVideo.setMediaController(mediaController2);
+                mediaController2.setAnchorView(video);
+
                 button.setOnClickListener(this.handleOnClick(expLayout,
-                        video,
-                        mediaController));
+                        video, responseVideo,
+                        mediaController, mediaController2));
 
                 RelativeLayout.LayoutParams videoLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
@@ -147,6 +159,7 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                         ViewGroup.LayoutParams.WRAP_CONTENT);
 
                 Button recordButton = new Button(ExpandableLayoutMaterialDesign.this);
+                recordButton.setId(View.generateViewId());
                 recordButton.setText("Record Answer");
 
                 if(jsonObject.has("text")) {
@@ -170,6 +183,13 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
 
                 recordButton.setOnClickListener(handleRecording(jsonObject.getString("_id")));
                 expLayout.addView(recordButton, recordButtonLayout);
+
+                //add our response video view
+                RelativeLayout.LayoutParams responseVideoLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+
+                responseVideoLayoutParams.addRule(RelativeLayout.BELOW, recordButton.getId());
+                expLayout.addView(responseVideo, responseVideoLayoutParams);
 
                 questionsRelativeLayout.addView(button, buttonLayoutParams);
                 questionsRelativeLayout.addView(expLayout, expLayoutParams);
@@ -219,7 +239,9 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
 
     private View.OnClickListener handleOnClick(final ExpandableLayout expLayout,
                                                final VideoView video,
-                                               final MediaController mediaController)  {
+                                               final VideoView responseVideo,
+                                               final MediaController mediaController,
+                                               final MediaController mediaController2)  { //responseVideo's media controller
         return new View.OnClickListener() {
             public void onClick(View v) {
                 expLayout.toggle();
@@ -228,10 +250,19 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                     mediaController.hide();
                     video.setVisibility(VideoView.GONE);
                     video.stopPlayback();
+
+                    mediaController2.hide();
+                    responseVideo.setVisibility(VideoView.GONE);
+                    responseVideo.stopPlayback();
                 } else {
                     video.seekTo(1);
                     video.setVisibility(VideoView.VISIBLE);
                     video.requestFocus();
+
+                    responseVideo.seekTo(1);
+                    responseVideo.setVisibility(VideoView.VISIBLE);
+                    responseVideo.requestFocus();
+
                     int id = ((ExpandableRelativeLayout)expLayout).getId();
                     for(Triplet triplet : toHide){
                         triplet.hideIfNotThisId(id);
