@@ -1,5 +1,6 @@
 package com.ppel;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.webkit.CookieManager;
 
@@ -35,7 +36,9 @@ public class RetrieveEmailTask extends AsyncTask<String, Void, String> {
                 HttpURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 CookieManager cookieManager = CookieManager.getInstance();
-                String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api/users/email"); //remove hardcode.
+                Resources resources = PPELApplication.resources;
+                String uri = resources.getString(R.string.PPEL_server) + resources.getString(R.string.Emails_API);
+                String cookie = cookieManager.getCookie(uri); //remove hardcode.
 
                 if(cookie == null){ //write better code than this when we have more time...
                     urlConnection.disconnect();

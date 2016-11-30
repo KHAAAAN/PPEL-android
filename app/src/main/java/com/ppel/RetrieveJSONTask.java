@@ -1,5 +1,6 @@
 package com.ppel;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.webkit.CookieManager;
 
@@ -18,7 +19,7 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by jay on 10/18/16.
  */
 
-public class RetrieveQuestionsTask extends AsyncTask<String, Void, String> {
+public class RetrieveJSONTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... params) {
@@ -31,7 +32,10 @@ public class RetrieveQuestionsTask extends AsyncTask<String, Void, String> {
                 HttpURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 CookieManager cookieManager = CookieManager.getInstance();
-                String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api");
+
+                Resources resources = PPELApplication.resources;
+                String uri = resources.getString(R.string.PPEL_server) + resources.getString(R.string.API);
+                String cookie = cookieManager.getCookie(uri);
 
                 urlConnection.setRequestProperty("Cookie", cookie);
                 try {

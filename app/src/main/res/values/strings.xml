@@ -1,7 +1,10 @@
 <resources>
     <string name="PPEL_server">https://debianvm.eecs.wsu.edu</string>
+    <string name="API">/api</string>
     <string name="Questions_API">/api/questions</string>
     <string name="Responses_API">/api/responses</string>
+    <string name="Emails_API">/api/users/email</string>
+    <string name ="LOGOUT">/Shibboleth.sso/Logout</string>
 
     <string name="app_name">PPEL</string>
 

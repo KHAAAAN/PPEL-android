@@ -1,8 +1,7 @@
 package com.ppel;
 
 import android.app.Application;
-import android.content.Intent;
-import android.util.Log;
+import android.content.res.Resources;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -15,8 +14,11 @@ import javax.net.ssl.X509TrustManager;
 
 public class PPELApplication extends Application {
 
+    public static Resources resources;
+
     @Override
     public void onCreate(){
+        resources = getResources();
         super.onCreate();
 
         // Create a trust manager that does not validate certificate chains

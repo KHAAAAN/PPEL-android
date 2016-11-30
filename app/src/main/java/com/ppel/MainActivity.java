@@ -162,7 +162,8 @@ public class MainActivity extends AppCompatActivity
         LogoutTask logoutTask = new LogoutTask();
 
         try {
-            logoutTask.execute(" https://debianvm.eecs.wsu.edu/Shibboleth.sso/Logout").get(10000, TimeUnit.MILLISECONDS);
+            String logout = getString(R.string.PPEL_server) + getString(R.string.LOGOUT);
+            logoutTask.execute(logout).get(10000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

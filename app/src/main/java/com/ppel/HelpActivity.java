@@ -5,7 +5,6 @@ package com.ppel;
  */
 
 import android.os.Bundle;
-import android.widget.LinearLayout;
 
 
 public class HelpActivity extends MainActivity{

@@ -54,7 +54,7 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
         toHide = new ArrayList<>();
 
         try {
-            String jsonString = new RetrieveQuestionsTask()
+            String jsonString = new RetrieveJSONTask()
                     .execute(ppelServerString + getString(R.string.Questions_API)).get(10000, TimeUnit.MILLISECONDS);
 
             initTabs(jsonString);
@@ -120,7 +120,7 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                 Uri uri = Uri.parse(ppelServerString + jsonObject.get("path").toString());
                 Map<String, String> headers = new HashMap<>(1);
                 CookieManager cookieManager = CookieManager.getInstance();
-                String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api");
+                String cookie = cookieManager.getCookie(ppelServerString + getString(R.string.API));
                 headers.put("Cookie", cookie);
 
                 video.setVideoURI(uri, headers);
@@ -134,18 +134,48 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                 expLayoutParams.addRule(RelativeLayout.BELOW, currButtonId);
 
                 //now take care of response video if it exists
-                VideoView responseVideo = new VideoView(ExpandableLayoutMaterialDesign.this);
-                responseVideo.setId(View.generateViewId());
+                String responsesString = "";
 
-                MediaController mediaController2 = new MediaController(ExpandableLayoutMaterialDesign.this);
-                String responsePath = "android.resource://" + getPackageName() + "/" + R.raw.sample;
-                responseVideo.setVideoURI(Uri.parse(responsePath));
-                responseVideo.setMediaController(mediaController2);
-                mediaController2.setAnchorView(video);
+                responsesString = new RetrieveJSONTask()
+                        .execute(ppelServerString + getString(R.string.Responses_API) + "/" + jsonObject.getString("_id")).get(10000, TimeUnit.MILLISECONDS);
 
-                button.setOnClickListener(this.handleOnClick(expLayout,
-                        video, responseVideo,
-                        mediaController, mediaController2));
+                JSONObject responsesJSON = null;
+                try {
+                    responsesJSON = new JSONObject(responsesString);
+                } catch(JSONException exception){
+                    responsesJSON = new JSONObject();
+                }
+
+                View.OnClickListener onClickListener = null;
+
+                /*String responsePath = "android.resource://" + getPackageName() + "/" + R.raw.sample;
+                responseVideo.setVideoURI(Uri.parse(responsePath));*/
+
+                VideoView responseVideo = null;
+                Button deleteButton = null;
+
+                if(responsesJSON.has("path")){
+                    responseVideo = new VideoView(ExpandableLayoutMaterialDesign.this);
+                    responseVideo.setId(View.generateViewId());
+
+                    MediaController mediaController2 = new MediaController(ExpandableLayoutMaterialDesign.this);
+
+                    responseVideo.setVideoURI(Uri.parse(ppelServerString + responsesJSON.getString("path")), headers);
+                    responseVideo.setMediaController(mediaController2);
+                    mediaController2.setAnchorView(responseVideo);
+                    onClickListener = this.handleOnClickWithResponse(expLayout,
+                            video, responseVideo,
+                            mediaController, mediaController2);
+
+                    //now delete button
+                    deleteButton = new Button(ExpandableLayoutMaterialDesign.this);
+                    deleteButton.setText("Delete Answer");
+
+                } else{
+                    onClickListener = this.handleOnClick(expLayout, video, mediaController);
+                }
+
+                button.setOnClickListener(onClickListener);
 
                 RelativeLayout.LayoutParams videoLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
@@ -155,15 +185,18 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                 Log.i("expLayoutId:", "" + expLayout.getId());
                 Log.i("videoId:", "" + video.getId());
 
-                RelativeLayout.LayoutParams recordButtonLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams recordButtonLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                recordButtonLayout.addRule(RelativeLayout.CENTER_IN_PARENT);
 
                 Button recordButton = new Button(ExpandableLayoutMaterialDesign.this);
                 recordButton.setId(View.generateViewId());
                 recordButton.setText("Record Answer");
 
+                TextView text= null;
                 if(jsonObject.has("text")) {
-                    TextView text = new TextView(ExpandableLayoutMaterialDesign.this);
+                    text = new TextView(ExpandableLayoutMaterialDesign.this);
                     text.setId(View.generateViewId());
                     text.setText(jsonObject.get("text").toString());
                     text.setTextSize(18);
@@ -173,7 +206,6 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                     textLayoutParams.addRule(RelativeLayout.BELOW, video.getId());
 
                     expLayout.addView(text, textLayoutParams);
-                    Log.i("textId:", "" + text.getId());
 
                     //add paramater info for recording button
                     recordButtonLayout.addRule(RelativeLayout.BELOW, text.getId());
@@ -184,12 +216,25 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                 recordButton.setOnClickListener(handleRecording(jsonObject.getString("_id")));
                 expLayout.addView(recordButton, recordButtonLayout);
 
-                //add our response video view
-                RelativeLayout.LayoutParams responseVideoLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT);
+                if(responsesJSON.has("path")) {
+                    //add our response video view
+                    RelativeLayout.LayoutParams responseVideoLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                    responseVideoLayoutParams.addRule(RelativeLayout.BELOW, recordButton.getId());
+                    expLayout.addView(responseVideo, responseVideoLayoutParams);
 
-                responseVideoLayoutParams.addRule(RelativeLayout.BELOW, recordButton.getId());
-                expLayout.addView(responseVideo, responseVideoLayoutParams);
+                    //add delete button to layout
+                    RelativeLayout.LayoutParams deleteButtonLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                    deleteButtonLayout.addRule(RelativeLayout.RIGHT_OF, recordButton.getId());
+                    if(text != null) {
+                        deleteButtonLayout.addRule(RelativeLayout.BELOW, text.getId());
+                    } else{
+                        deleteButtonLayout.addRule(RelativeLayout.BELOW, video.getId());
+                    }
+                    deleteButton.setOnClickListener(this.handleDeleting(expLayout, responsesJSON.getString("_id"), responseVideo, deleteButton));
+                    expLayout.addView(deleteButton, deleteButtonLayout);
+                }
 
                 questionsRelativeLayout.addView(button, buttonLayoutParams);
                 questionsRelativeLayout.addView(expLayout, expLayoutParams);
@@ -199,6 +244,12 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
                 toHide.add(new Triplet(expLayout, video, mediaController));
             }
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
             e.printStackTrace();
         }
     }
@@ -227,6 +278,23 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
     }
     private List<Triplet> toHide;
 
+    private View.OnClickListener handleDeleting(final ExpandableRelativeLayout expLayout,
+                                                final String objectId,
+                                                final VideoView responseVideo,
+                                                final Button deleteButton){
+        return new View.OnClickListener(){
+            public void onClick(View v){
+                DeleteTask deleteTask = new DeleteTask();
+                String delete = ppelServerString + getString(R.string.Responses_API) + "/" + objectId;
+
+                deleteTask.execute(delete); // non-blocking
+
+                expLayout.removeView(responseVideo);
+                expLayout.removeView(deleteButton);
+            }
+        };
+    }
+
     private View.OnClickListener handleRecording(final String objectId){
         return new View.OnClickListener(){
             public void onClick(View v){
@@ -238,6 +306,31 @@ public class ExpandableLayoutMaterialDesign extends MainActivity {
     }
 
     private View.OnClickListener handleOnClick(final ExpandableLayout expLayout,
+                                               final VideoView video,
+                                               final MediaController mediaController)  { //responseVideo's media controller
+        return new View.OnClickListener() {
+            public void onClick(View v) {
+                expLayout.toggle();
+
+                if(expLayout.isExpanded()) {
+                    mediaController.hide();
+                    video.setVisibility(VideoView.GONE);
+                    video.stopPlayback();
+                } else {
+                    video.seekTo(1);
+                    video.setVisibility(VideoView.VISIBLE);
+                    video.requestFocus();
+
+                    int id = ((ExpandableRelativeLayout)expLayout).getId();
+                    for(Triplet triplet : toHide){
+                        triplet.hideIfNotThisId(id);
+                    }
+                }
+            }
+        };
+    }
+
+    private View.OnClickListener handleOnClickWithResponse(final ExpandableLayout expLayout,
                                                final VideoView video,
                                                final VideoView responseVideo,
                                                final MediaController mediaController,

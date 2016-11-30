@@ -1,11 +1,8 @@
-package com.ppel.login;
+package com.ppel;
 
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.webkit.CookieManager;
-
-import com.ppel.PPELApplication;
-import com.ppel.R;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -17,10 +14,10 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * Created by jay on 11/17/16.
+ * Created by root on 11/29/16.
  */
 
-public class LogoutTask extends AsyncTask<String , Void, Void> {
+public class DeleteTask extends AsyncTask<String , Void, Void> {
 
     @Override
     protected Void doInBackground(String... params)
@@ -31,7 +28,7 @@ public class LogoutTask extends AsyncTask<String , Void, Void> {
 
             try {
                 HttpURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
+                urlConnection.setRequestMethod("DELETE");
 
                 Resources resources = PPELApplication.resources;
                 String uri = resources.getString(R.string.PPEL_server) + resources.getString(R.string.API);
@@ -43,14 +40,14 @@ public class LogoutTask extends AsyncTask<String , Void, Void> {
                 }
                 urlConnection.setRequestProperty("Cookie", cookie);
                 try {
-                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    urlConnection.getInputStream();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
                     urlConnection.disconnect();
                 }
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
         } catch (MalformedURLException e) {

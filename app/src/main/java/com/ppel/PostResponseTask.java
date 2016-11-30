@@ -1,5 +1,6 @@
 package com.ppel;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.webkit.CookieManager;
@@ -9,7 +10,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -27,9 +27,11 @@ public class PostResponseTask extends AsyncTask<String, Void, String> {
         DataOutputStream outputStream = null;
         DataInputStream inStream = null;
 
+        Resources resources = PPELApplication.resources;
+        String uri = resources.getString(R.string.PPEL_server) + resources.getString(R.string.Responses_API);
 
         String pathOfYourFile = params[1];
-        String urlServer = "https://debianvm.eecs.wsu.edu/api/responses/" + params[0]; //change hardcoded api responses later.
+        String urlServer = uri +"/" + params[0]; //change hardcoded api responses later.
         String lineEnd = "\r\n";
         String twoHyphens = "--";
         String boundary =  "*****";
@@ -54,7 +56,7 @@ public class PostResponseTask extends AsyncTask<String, Void, String> {
             // Enable POST method
             connection.setRequestMethod("POST");
             CookieManager cookieManager = CookieManager.getInstance();
-            String cookie = cookieManager.getCookie("https://debianvm.eecs.wsu.edu/api");
+            String cookie = cookieManager.getCookie(resources.getString(R.string.PPEL_server) + resources.getString(R.string.API));
 
             connection.setRequestProperty("Cookie", cookie);
             connection.setRequestProperty("Connection", "Keep-Alive");

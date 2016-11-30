@@ -1,9 +1,6 @@
 package com.ppel;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.content.res.AssetFileDescriptor;
-import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.os.Bundle;
